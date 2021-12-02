@@ -5,6 +5,7 @@ import numpy as np
 import torch
 import torchvision
 import nibabel as nib
+from utils.transformers import ToTensor, ClipNorm, ZeroPad
 
 '''
 Images and annotations should be as follows:
@@ -26,11 +27,11 @@ dataset_folder
 
 class MyocardialPerfusionDataset(torch.utils.data.Dataset):
 
-    def __init__(self, root, transform=True) -> None:
+    def __init__(self, root, transform_img = torchvision.transforms.Compose([ToTensor(), ClipNorm(), ZeroPad()]), transform_mark = torchvision.transforms.Compose([ToTensor(), ZeroPad()])) -> None:
        
-
         self.root = root
-        self.transform = transform
+        self.transform_mark = transform_mark
+        self.transform_img = transform_img
 
         # create a dictionary for images.
         locations = list(sorted(os.listdir(os.path.join(self.root, 'dicom'))))
@@ -50,4 +51,13 @@ class MyocardialPerfusionDataset(torch.utils.data.Dataset):
         dicom = pydicom.read_file(path_img)
         mark = nib.load(os.path.join(self.root, 'marks', '%s.nii.gz' % self.img_dict[idx]['patient_id'])).get_fdata()[self.img_dict[idx]['mark']]
 
-    
+        if self.transform_img:
+            dicom = self.transform_img(dicom)
+
+        if self.transform_mark:
+            mark = self.transform_mark(mark)
+        
+        return dicom, mark
+
+    def __len__(self):
+        return len(self.img_dict)

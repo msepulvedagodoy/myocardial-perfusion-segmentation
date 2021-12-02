@@ -41,11 +41,11 @@ class ZeroPad(object):
       self.size = size
 
     def __call__(self, sample):
-      if torch.max(sample.size()[0], sample.size()[1]) > self.size:
+      if max(sample.size()[1], sample.size()[2]) > self.size:
         raise ValueError("Data can't be padded to a smaller shape.")
       
-      h_pad = self.size - sample.size()[0]
-      w_pad = self.size - sample.size()[1]
+      h_pad = self.size - sample.size()[1]
+      w_pad = self.size - sample.size()[2]
 
       padding_left = h_pad // 2
       padding_right = h_pad - padding_left
