@@ -5,7 +5,7 @@ import numpy as np
 import torch
 import torchvision
 import nibabel as nib
-from utils.transformers import ToTensor, ClipNorm, ZeroPad
+from transformers import ToTensor, ClipNorm, ZeroPad
 
 '''
 Images and annotations should be as follows:
@@ -38,9 +38,9 @@ class MyocardialPerfusionDataset(torch.utils.data.Dataset):
         img_dict = []
         for loc in locations:
             marks_ = nib.load(os.path.join(self.root, 'marks', '%s.nii.gz' % loc)).get_fdata()
-            for index, img in enumerate(list(sorted(os.listdir(os.path.join(self.root, loc))))):
+            for index, img in enumerate(list(sorted(os.listdir(os.path.join(self.root, 'dicom', loc))))):
                 if np.max(marks_[:,:,index]) > 0:
-                    dict_ = {'patient_id': loc, 'img_dir': os.path.join(self.root, loc, img), 'mark': index}
+                    dict_ = {'patient_id': loc, 'img_dir': os.path.join(self.root, 'dicom', loc, img), 'mark': index}
                     img_dict.append(dict_)
         
         self.img_dict = img_dict
@@ -48,7 +48,7 @@ class MyocardialPerfusionDataset(torch.utils.data.Dataset):
 
     def __getitem__(self, idx):
         path_img = self.img_dict[idx]['img_dir']
-        dicom = pydicom.read_file(path_img)
+        dicom = pydicom.read_file(path_img).pixel_array.astype('int32')
         mark = nib.load(os.path.join(self.root, 'marks', '%s.nii.gz' % self.img_dict[idx]['patient_id'])).get_fdata()[self.img_dict[idx]['mark']]
 
         if self.transform_img:
@@ -61,3 +61,14 @@ class MyocardialPerfusionDataset(torch.utils.data.Dataset):
 
     def __len__(self):
         return len(self.img_dict)
+
+def loader(dataset, batch_size, num_workers=8, shuffle=True):
+
+    input_images = dataset
+
+    input_loader = torch.utils.data.DataLoader(dataset=input_images,
+                                                batch_size=batch_size,
+                                                shuffle=shuffle,
+                                                num_workers=num_workers)
+
+    return input_loader
