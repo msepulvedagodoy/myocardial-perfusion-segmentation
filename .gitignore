@@ -6,5 +6,7 @@ roi_utils.py
 /storage
 /.vscode
 help.py
-SegAN.py
 train.py
+loss.py
+requirements.txt
+basura

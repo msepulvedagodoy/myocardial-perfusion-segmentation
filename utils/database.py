@@ -1,74 +1,35 @@
-
-import os
-import pydicom
-import numpy as np
 import torch
+import os
 import torchvision
-import nibabel as nib
-from transformers import ToTensor, ClipNorm, ZeroPad
 
-'''
-Images and annotations should be as follows:
+class dataset_perfusion(torch.utils.data.Dataset):
 
-dataset_folder
-    |__ FOLDER_IMAGES
-        |__ 100
-            |__ ...
-        |__ 101
-            |__ ...
-        |__ 102
-            |__ ...
-        |__ ...
-    |__ FOLDER_MARKS
-        |__ 100.nii.gz
-        |__ 101.nii.gz
-        |__ ...
-'''
-
-class MyocardialPerfusionDataset(torch.utils.data.Dataset):
-
-    def __init__(self, root, transform_img = torchvision.transforms.Compose([ToTensor(), ClipNorm(), ZeroPad()]), transform_mark = torchvision.transforms.Compose([ToTensor(), ZeroPad()])) -> None:
-       
+    def __init__(self, root, inference = False) -> None:
+        super().__init__()
         self.root = root
-        self.transform_mark = transform_mark
-        self.transform_img = transform_img
+        self.inference = inference
 
-        # create a dictionary for images.
-        locations = list(sorted(os.listdir(os.path.join(self.root, 'dicom'))))
+        locations = list(sorted(os.listdir(os.path.join(self.root, 'imgs'))))
         img_dict = []
         for loc in locations:
-            marks_ = nib.load(os.path.join(self.root, 'marks', '%s.nii.gz' % loc)).get_fdata()
-            for index, img in enumerate(list(sorted(os.listdir(os.path.join(self.root, 'dicom', loc))))):
-                if np.max(marks_[:,:,index]) > 0:
-                    dict_ = {'patient_id': loc, 'img_dir': os.path.join(self.root, 'dicom', loc, img), 'mark': index}
-                    img_dict.append(dict_)
-        
+            marks = list(sorted(os.listdir(os.path.join(self.root, 'marks', loc))))
+            imgs = list(sorted(os.listdir(os.path.join(self.root, 'imgs', loc))))
+            for i in range(len(imgs)):
+                dict = {'patient_id': loc, 'img_dir': os.path.join(self.root, 'imgs', loc, imgs[i]), 
+                            'mark_dir': os.path.join(self.root, 'marks', loc, marks[i])}
+                img_dict.append(dict)
+
         self.img_dict = img_dict
 
-
     def __getitem__(self, idx):
+
         path_img = self.img_dict[idx]['img_dir']
-        dicom = pydicom.read_file(path_img).pixel_array.astype('int32')
-        mark = nib.load(os.path.join(self.root, 'marks', '%s.nii.gz' % self.img_dict[idx]['patient_id'])).get_fdata()[self.img_dict[idx]['mark']]
+        path_mark = self.img_dict[idx]['mark_dir']
 
-        if self.transform_img:
-            dicom = self.transform_img(dicom)
+        img = torchvision.io.read_image(path_img)
+        mark = torchvision.io.read_image(path_mark)
 
-        if self.transform_mark:
-            mark = self.transform_mark(mark)
-        
-        return dicom, mark
+        return img, mark
 
     def __len__(self):
         return len(self.img_dict)
-
-def loader(dataset, batch_size, num_workers=8, shuffle=True):
-
-    input_images = dataset
-
-    input_loader = torch.utils.data.DataLoader(dataset=input_images,
-                                                batch_size=batch_size,
-                                                shuffle=shuffle,
-                                                num_workers=num_workers)
-
-    return input_loader

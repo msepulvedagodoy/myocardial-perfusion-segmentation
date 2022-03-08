@@ -47,11 +47,11 @@ class ZeroPad(object):
       h_pad = self.size - sample.size()[1]
       w_pad = self.size - sample.size()[2]
 
-      padding_left = h_pad // 2
-      padding_right = h_pad - padding_left
+      padding_left = w_pad // 2
+      padding_right = w_pad - padding_left
 
-      padding_top = w_pad // 2
-      padding_bottom = w_pad - padding_top
+      padding_top = h_pad // 2
+      padding_bottom = h_pad - padding_top
  
       padding = (padding_left, padding_right, padding_top, padding_bottom)
 
