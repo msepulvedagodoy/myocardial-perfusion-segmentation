@@ -1,7 +1,7 @@
 import torch
 from collections import OrderedDict
 
-class UNET(torch.nn.Module):
+class UNet(torch.nn.Module):
 
     def __init__(self, input_channels=1, output_channels=1, init_features=32) -> None:
         super(UNet, self).__init__()
