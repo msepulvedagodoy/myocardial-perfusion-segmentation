@@ -1,9 +1,9 @@
 .DS_Store
 __pycache__
 *.log
-myocardial-env
+/myocardial-env
 roi_utils.py
-storage
+/storage
 /.vscode
 help.py
 train.py
