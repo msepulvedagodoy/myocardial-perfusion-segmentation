@@ -1,0 +1,12 @@
+# pip install -r requirements.txt
+
+# database
+pydicom
+nibabel
+
+# roi
+torch
+torchvision
+sklearn
+scipy
+numpy
