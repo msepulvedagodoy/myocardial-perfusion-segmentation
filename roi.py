@@ -136,12 +136,14 @@ class ROI(object):
 
             mask = torch.tensor(bd(mask, iterations=5))
             mask = torch.tensor(be(mask, iterations=5))
-            label_im, nb_labels = torch.tensor(ndimage.label(mask))
+            label_im, nb_labels = ndimage.label(mask)
+            label_im = torch.tensor(label_im)
+            nb_labels = nb_labels
 
             # Find the largest connected component 
             sizes = torch.tensor(ndimage.sum(mask, label_im, range(nb_labels + 1)))
             mask_size = sizes < torch.max(sizes) * 0.9
-            remove_pixel = mask_size[label_im]
+            remove_pixel = mask_size[label_im.long()]
             label_im[remove_pixel] = 0
             labels = torch.unique(label_im)
             label_im = torch.tensor(np.searchsorted(labels, label_im))
