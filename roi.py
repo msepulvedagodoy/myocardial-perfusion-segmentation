@@ -26,10 +26,7 @@ class ROI(object):
         for t in range(n_frames):
             slice_imgs_small[t] = torchvision.transforms.functional.resize(slice_imgs[t], original_dim_downsampled)
 
-        if slice_annot is not None:
             slice_marks_small[t] = torchvision.transforms.functional.resize(slice_annot[t], original_dim_downsampled)
-        else:
-            slice_marks_small = None
 
         pre_processing_results = self.pre_processing(slice_imgs_small)
         cum_diff = pre_processing_results['cum_diff']
