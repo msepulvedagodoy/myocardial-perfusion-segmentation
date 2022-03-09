@@ -147,7 +147,7 @@ class ROI(object):
             label_im[remove_pixel] = 0
             labels = torch.unique(label_im)
             label_im = torch.tensor(np.searchsorted(labels, label_im))
-            slice_x, slice_y = torch.tensor(ndimage.find_objects(label_im == 1)[0])
+            slice_x, slice_y = ndimage.find_objects(label_im == 1)[0]
             roi = torch.reshape(proc_img, (img_shape))[slice_x, slice_y]
             return [slice_x, slice_y], roi, mask
 
