@@ -120,11 +120,11 @@ class ROI(object):
             for i in range(n_steps):
                 if i == 0:
                     di = self.pix_diff(img)
-                    w = torch.tensor(normalize(di * F, norm='l1', axis=1))
+                    w = torch.tensor(normalize(di * F, norm='l1', axis=1)).float()
                     res = torch.matmul(prior, w)
                 else:
                     di = self.pix_diff(res)
-                    w = torch.tensor(normalize(di * F, norm='l1', axis=1))
+                    w = torch.tensor(normalize(di * F, norm='l1', axis=1)).float()
                     res = torch.matmul(res, w)
             return res
 
