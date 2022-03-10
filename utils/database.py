@@ -4,10 +4,11 @@ import torchvision
 
 class dataset_perfusion(torch.utils.data.Dataset):
 
-    def __init__(self, root, inference = False) -> None:
+    def __init__(self, root, inference = False, normalize = torchvision.transforms.Compose([torchvision.transforms.Normalize((0.5,), (0.5,))])) -> None:
         super().__init__()
         self.root = root
         self.inference = inference
+        self.normalize = normalize
 
         locations = list(sorted(os.listdir(os.path.join(self.root, 'imgs'))))
         img_dict = []
@@ -28,6 +29,9 @@ class dataset_perfusion(torch.utils.data.Dataset):
 
         img = torchvision.io.read_image(path_img, torchvision.io.ImageReadMode.GRAY)
         mark = torchvision.io.read_image(path_mark, torchvision.io.ImageReadMode.GRAY)
+
+        if self.normalize:
+            img = self.normalize(img)
 
         return img, mark
 
