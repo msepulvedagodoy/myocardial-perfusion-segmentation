@@ -27,8 +27,8 @@ class dataset_perfusion(torch.utils.data.Dataset):
         path_img = self.img_dict[idx]['img_dir']
         path_mark = self.img_dict[idx]['mark_dir']
 
-        img = torchvision.io.read_image(path_img, torchvision.io.ImageReadMode.GRAY).float()
-        mark = torchvision.io.read_image(path_mark, torchvision.io.ImageReadMode.GRAY).float()
+        img = torchvision.io.read_image(path_img, torchvision.io.ImageReadMode.GRAY).float()/255.
+        mark = torchvision.io.read_image(path_mark, torchvision.io.ImageReadMode.GRAY).float()/255.
 
         if self.normalize:
             img = self.normalize(img)
