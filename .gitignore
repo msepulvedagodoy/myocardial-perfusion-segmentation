@@ -7,5 +7,4 @@ roi_utils.py
 /.vscode
 help.py
 train.py
-loss.py
 basura
