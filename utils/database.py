@@ -26,8 +26,8 @@ class dataset_perfusion(torch.utils.data.Dataset):
         path_img = self.img_dict[idx]['img_dir']
         path_mark = self.img_dict[idx]['mark_dir']
 
-        img = torchvision.io.read_image(path_img)
-        mark = torchvision.io.read_image(path_mark)
+        img = torchvision.io.read_image(path_img, torchvision.io.ImageReadMode.GRAY)
+        mark = torchvision.io.read_image(path_mark, torchvision.io.ImageReadMode.GRAY)
 
         return img, mark
 
