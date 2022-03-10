@@ -1,14 +1,15 @@
 import torch
 import os
 import torchvision
+import cv2
 
 class dataset_perfusion(torch.utils.data.Dataset):
 
-    def __init__(self, root, inference = False, normalize = torchvision.transforms.Compose([torchvision.transforms.Normalize((0.5,), (0.5,))])) -> None:
+    def __init__(self, root, inference = False, transforms = torchvision.transforms.Compose([torchvision.transforms.ToPILImage(), torchvision.transforms.ToTensor()])) -> None:
         super().__init__()
         self.root = root
         self.inference = inference
-        self.normalize = normalize
+        self.transforms = transforms
 
         locations = list(sorted(os.listdir(os.path.join(self.root, 'imgs'))))
         img_dict = []
@@ -27,11 +28,14 @@ class dataset_perfusion(torch.utils.data.Dataset):
         path_img = self.img_dict[idx]['img_dir']
         path_mark = self.img_dict[idx]['mark_dir']
 
-        img = torchvision.io.read_image(path_img, torchvision.io.ImageReadMode.GRAY).float()/255.
-        mark = torchvision.io.read_image(path_mark, torchvision.io.ImageReadMode.GRAY).float()
+        img = cv2.imread(path_img, 0)
+        mark = cv2.imread(path_mark, 0)
+        #img = torchvision.io.read_image(path_img, torchvision.io.ImageReadMode.GRAY).float()/255.
+        #mark = torchvision.io.read_image(path_mark, torchvision.io.ImageReadMode.GRAY).float()
 
-        if self.normalize:
-            img = self.normalize(img)
+        if self.transforms:
+            img = self.transforms(img)
+            mark = self.transforms(mark)
 
         return img, mark
 
