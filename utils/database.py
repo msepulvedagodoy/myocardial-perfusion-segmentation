@@ -40,7 +40,7 @@ class dataset_perfusion(torch.utils.data.Dataset):
     def __len__(self):
         return len(self.img_dict)
 
-def loader(dataset, batch_size, num_workers=4, shuffle=True):
+def loader(dataset, batch_size, num_workers=2, shuffle=True):
 
     input_images = dataset
 
