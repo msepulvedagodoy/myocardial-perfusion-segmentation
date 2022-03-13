@@ -17,37 +17,25 @@ class dataset_perfusion(torch.utils.data.Dataset):
             marks = list(sorted(os.listdir(os.path.join(self.root, 'marks', loc))))
             imgs = list(sorted(os.listdir(os.path.join(self.root, 'imgs', loc))))
             for i in range(len(imgs)):
-                dict = {'patient_id': loc, 'img_dir': os.path.join(self.root, 'imgs', loc, imgs[i]), 
-                            'mark_dir': os.path.join(self.root, 'marks', loc, marks[i])}
+                dict = {'patient_id': loc, 'img_dir': torchvision.io.read_image(os.path.join(self.root, 'imgs', loc, imgs[i]), torchvision.io.ImageReadMode.GRAY), 
+                            'mark_dir': torchvision.io.read_image(os.path.join(self.root, 'marks', loc, marks[i]), torchvision.io.ImageReadMode.GRAY)}
                 img_dict.append(dict)
 
         self.img_dict = img_dict
 
     def __getitem__(self, idx):
 
-        path_img = self.img_dict[idx]['img_dir']
-        path_mark = self.img_dict[idx]['mark_dir']
+        img = self.img_dict[idx]['img_dir']
+        mark = self.img_dict[idx]['mark_dir']
 
-        img = torchvision.io.read_image(path_img, torchvision.io.ImageReadMode.GRAY)/255.
-        mark = torchvision.io.read_image(path_mark, torchvision.io.ImageReadMode.GRAY)/255.
+        #img = torchvision.io.read_image(path_img, torchvision.io.ImageReadMode.GRAY)
+        #mark = torchvision.io.read_image(path_mark, torchvision.io.ImageReadMode.GRAY)
 
-        #if self.transforms:
-        #    img = self.transforms(img)
-        #    mark = self.transforms(mark)
+        if self.transforms:
+            img = self.transforms(img)
+            mark = self.transforms(mark)
 
         return img, mark
 
     def __len__(self):
         return len(self.img_dict)
-
-def loader(dataset, batch_size, num_workers=2, shuffle=True):
-
-    input_images = dataset
-
-    input_loader = torch.utils.data.DataLoader(dataset=input_images,
-                                                batch_size=batch_size,
-                                                shuffle=shuffle,
-                                                num_workers=num_workers,
-                                                pin_memory=True)
-
-    return input_loader
