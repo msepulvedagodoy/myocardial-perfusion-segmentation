@@ -10,3 +10,6 @@ torchvision
 sklearn
 scipy
 numpy
+
+# model training
+wandb
