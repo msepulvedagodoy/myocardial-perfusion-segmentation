@@ -5,7 +5,7 @@ import cv2
 
 class dataset_perfusion(torch.utils.data.Dataset):
 
-    def __init__(self, root, inference = False, transforms = torchvision.transforms.Compose([torchvision.transforms.AutoAugment(),torchvision.transforms.ToPILImage(), torchvision.transforms.ToTensor()])) -> None:
+    def __init__(self, root, inference = False, transforms = torchvision.transforms.Compose([torchvision.transforms.ToPILImage(), torchvision.transforms.ToTensor()])) -> None:
         super().__init__()
         self.root = root
         self.inference = inference
