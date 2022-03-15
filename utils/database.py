@@ -1,15 +1,20 @@
 import torch
 import os
 import torchvision
-import cv2
+import random
+from utils.data_augmentation import *
+
+transforms = torchvision.transforms.Compose([torchvision.transforms.ToPILImage(), torchvision.transforms.ToTensor()])
+augmentation = [RotationTransform(), VflipTransform(), HflipTransform(), AdjustbrightnessTransform(), AdjustcontrastTransform()]
 
 class dataset_perfusion(torch.utils.data.Dataset):
 
-    def __init__(self, root, inference = False, transforms = torchvision.transforms.Compose([torchvision.transforms.ToPILImage(), torchvision.transforms.ToTensor()])) -> None:
+    def __init__(self, root, inference = False, transforms=transforms, augmentation = augmentation) -> None:
         super().__init__()
         self.root = root
         self.inference = inference
         self.transforms = transforms
+        self.augmentation = augmentation
 
         locations = list(sorted(os.listdir(os.path.join(self.root, 'imgs'))))
         img_dict = []
@@ -34,6 +39,10 @@ class dataset_perfusion(torch.utils.data.Dataset):
         if self.transforms:
             img = self.transforms(img)
             mark = self.transforms(mark)
+
+        if self.augmentation:
+            augment = torchvision.transforms.Compose([random.choice(self.augmentation)])
+            img, mark = augment({'img': img, 'mark': mark})
 
         return img, mark
 
