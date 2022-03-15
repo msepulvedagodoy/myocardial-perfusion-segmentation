@@ -44,6 +44,8 @@ class dataset_perfusion(torch.utils.data.Dataset):
             augment = torchvision.transforms.Compose([random.choice(self.augmentation)])
             img, mark = augment({'img': img, 'mark': mark})
 
+        mark = torch.nn.functional.one_hot(torch.squeeze(mark, dim=0).long(), num_classes=3).permute((2,0,1))
+
         return img, mark
 
     def __len__(self):
