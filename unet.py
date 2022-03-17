@@ -50,7 +50,7 @@ class UNet(torch.nn.Module):
         decoder_1 = torch.cat((decoder_1, encoder_1), dim=1)
         decoder_1 = self.decoder_1(decoder_1)
 
-        return torch.softmax(self.conv(decoder_1))
+        return torch.softmax(self.conv(decoder_1), dim=1)
 
 
     @staticmethod
