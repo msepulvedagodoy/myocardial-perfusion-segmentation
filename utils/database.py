@@ -4,12 +4,11 @@ import torchvision
 import random
 from utils.data_augmentation import *
 
-transforms = torchvision.transforms.Compose([torchvision.transforms.ToPILImage(), torchvision.transforms.ToTensor()])
-augmentation = [RotationTransform(), VflipTransform(), HflipTransform(), AdjustbrightnessTransform(), AdjustcontrastTransform()]
 
 class dataset_perfusion(torch.utils.data.Dataset):
 
-    def __init__(self, root, inference = False, transforms=transforms, augmentation = augmentation) -> None:
+    def __init__(self, root, inference = False, transforms=torchvision.transforms.Compose([torchvision.transforms.ToPILImage(), torchvision.transforms.ToTensor()]), 
+    augmentation = [RotationTransform(), VflipTransform(), HflipTransform(), AdjustbrightnessTransform(), AdjustcontrastTransform()]) -> None:
         super().__init__()
         self.root = root
         self.inference = inference
