@@ -52,15 +52,15 @@ class ROI(object):
 
     def gaussian_kernel(self, size, mean, std):
         distr = torch.distributions.normal.Normal(mean, std)
-        vals = torch.exp(distr.log_prob(torch.range(start=-size, end=size+1)))
+        vals = torch.exp(distr.log_prob(torch.arange(start=-size, end=size+1, step=1)))
         gauss_kernel = torch.einsum('i,j->ij', vals, vals)
         
-        return torch.divide(gauss_kernel, torch.sum(gauss_kernel))
+        return torch.div(gauss_kernel, torch.sum(gauss_kernel), rounding_mode = 'floor')
 
     def pre_processing(self, input):
         m, _ = input.shape[2:]
         cum_diff = torch.var(input, dim=0)
-        cum_diff = torch.divide(cum_diff, torch.max(cum_diff))
+        cum_diff = torch.div(cum_diff, torch.max(cum_diff), rounding_mode = 'floor')
         mask = torch.greater(cum_diff, 0.05)
         mask_f = mask.float()
         cum_diff_padded = cum_diff * mask_f + (torch.tensor(1)-mask_f) * np.percentile(torch.masked_select(cum_diff, mask), 50)
@@ -131,7 +131,7 @@ class ROI(object):
     def get_bb(self, proc_img, img_shape):
 
             normalized = torch.reshape(proc_img, img_shape) - torch.min(proc_img)
-            normalized = torch.divide(normalized, (torch.max(normalized) - torch.min(normalized)))
+            normalized = torch.div(normalized, (torch.max(normalized) - torch.min(normalized)), rounding_mode = 'floor')
             mask = normalized > 0.5
 
             mask = torch.tensor(bd(mask, iterations=5))
