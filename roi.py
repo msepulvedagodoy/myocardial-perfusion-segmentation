@@ -10,7 +10,7 @@ class ROI(object):
     def __init__(self) -> None:
         super().__init__()
 
-    def apply_roi(self, slice_imgs, slice_annot=None, compute_metric=False):
+    def apply_roi(self, slice_imgs, slice_annot=None, compute_metric=False, dtype='perfusion'):
 
         video_shape = slice_imgs.shape
         original_dim = torch.tensor(video_shape[2:4])
@@ -28,17 +28,24 @@ class ROI(object):
 
             slice_marks_small[t] = torchvision.transforms.functional.resize(slice_annot[t], original_dim_downsampled)
 
-        pre_processing_results = self.pre_processing(slice_imgs_small)
-        cum_diff = pre_processing_results['cum_diff']
-        filtered_image = pre_processing_results['filtered_image']
+        if dtype == 'perfusion':
+            pre_processing_results = self.pre_processing(slice_imgs_small)
+            cum_diff = pre_processing_results['cum_diff']
+            filtered_image = pre_processing_results['filtered_image']
 
-        # Do the Graph-Based Visual Saliency
-        square_len, start_x, start_y = self.full_gbvs(cum_diff, filtered_image, slice_marks_small, img_size=original_dim_downsampled)
+            # Do the Graph-Based Visual Saliency
+            square_len, start_x, start_y = self.full_gbvs(cum_diff, filtered_image, slice_marks_small, img_size=original_dim_downsampled)
 
-         # Transform the roi rectangle to high dimensionality.
-        square_len = downsample_n * square_len
-        start_x = downsample_n * start_x
-        start_y = downsample_n * start_y
+            # Transform the roi rectangle to high dimensionality.
+            square_len = downsample_n * square_len
+            start_x = downsample_n * start_x
+            start_y = downsample_n * start_y
+
+        elif dtype == 'cine':
+            # Compute the roi using the annotations (only cine).
+            slices, _, mask = self.get_bb(torch.sum(slice_annot, dim=0), original_dim)
+            square_len, start_x, start_y = self.rectangle_to_square(slices, original_dim)
+
 
         # Create roi from square length and starting points.
         roi = torch.zeros_like(slice_imgs)
