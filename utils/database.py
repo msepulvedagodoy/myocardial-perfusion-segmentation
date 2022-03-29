@@ -5,7 +5,7 @@ import random
 from utils.data_augmentation import *
 
 
-class dataset_perfusion(torch.utils.data.Dataset):
+class dataset_mri(torch.utils.data.Dataset):
 
     def __init__(self, root, inference = False, transforms=torchvision.transforms.Compose([torchvision.transforms.ToPILImage(), torchvision.transforms.ToTensor()]), 
     augmentation = [RotationTransform(), VflipTransform(), HflipTransform(), AdjustbrightnessTransform(), AdjustcontrastTransform()]) -> None:
