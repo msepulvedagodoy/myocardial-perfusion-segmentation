@@ -43,8 +43,8 @@ class ROI(object):
 
         elif dtype == 'cine':
             # Compute the roi using the annotations (only cine).
-            slices, _, mask = self.get_bb(torch.sum(slice_annot, dim=0), original_dim)
-            square_len, start_x, start_y = self.rectangle_to_square(slices, original_dim)
+            slices, _, mask = self.get_bb(torch.sum(slice_annot, dim=0), list(original_dim.numpy()))
+            square_len, start_x, start_y = self.rectangle_to_square(slices, list(original_dim.numpy()))
 
 
         # Create roi from square length and starting points.
