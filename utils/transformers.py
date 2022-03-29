@@ -1,5 +1,6 @@
 import torch
 import numpy as np
+import torchvision
 
 class ToTensor(object):
 
@@ -42,8 +43,13 @@ class ZeroPad(object):
 
     def __call__(self, sample):
       if max(sample.size()[1], sample.size()[2]) > self.size:
-        raise ValueError("Data can't be padded to a smaller shape.")
-      
+        if sample.size()[1] > sample.size()[2]:
+          crop = torchvision.transforms.CenterCrop((self.size, sample.size()[2]))
+          sample = crop(sample)
+        else:
+          crop = torchvision.transforms.CenterCrop((sample.size()[1], self.size))
+          sample = crop(sample)
+
       h_pad = self.size - sample.size()[1]
       w_pad = self.size - sample.size()[2]
 
