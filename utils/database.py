@@ -37,7 +37,6 @@ class dataset_mri(torch.utils.data.Dataset):
 
         if self.transforms:
             img = self.transforms(img)
-            mark = self.transforms(mark)
 
         if self.augmentation:
             augment = torchvision.transforms.Compose([random.choice(self.augmentation)])
