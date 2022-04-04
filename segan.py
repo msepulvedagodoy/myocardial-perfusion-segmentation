@@ -75,10 +75,6 @@ class NetDis(torch.nn.Module):
 
         return torch.cat((sample.flatten(start_dim=1), encoder1.flatten(start_dim=1), encoder2.flatten(start_dim=1), encoder3.flatten(start_dim=1)), dim=1)
 
-
-
-
-
     @staticmethod
     def block(in_channels, features):
         return torch.nn.Sequential(
