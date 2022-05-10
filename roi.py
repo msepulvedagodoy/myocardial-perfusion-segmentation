@@ -62,7 +62,7 @@ class ROI(object):
         vals = torch.exp(distr.log_prob(torch.arange(start=-size, end=size+1, step=1)))
         gauss_kernel = torch.einsum('i,j->ij', vals, vals)
         
-        return torch.div(gauss_kernel, torch.sum(gauss_kernel), rounding_mode = 'floor')
+        return torch.divide(gauss_kernel, torch.sum(gauss_kernel))
 
     def pre_processing(self, input):
         m, _ = input.shape[2:]
