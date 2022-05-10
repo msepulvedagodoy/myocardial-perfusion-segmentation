@@ -114,8 +114,7 @@ class ROI(object):
     def stationary_gbvs(self, img, F, nsteps, prior):
             prior = torch.reshape(prior, (1,-1))
             di = self.pix_diff(img)
-            w = torch.nn.functional.normalize(di * F, dim=1).float()
-            #torch.tensor(normalize(di * F, norm='l1', axis=1)).float()
+            w = torch.tensor(normalize(di * F, norm='l1', axis=1)).float()
             res = torch.matmul(prior, w)
             for i in range(nsteps - 1):
                 res = torch.matmul(res, w)
@@ -128,14 +127,12 @@ class ROI(object):
             for i in range(n_steps):
                 if i == 0:
                     di = self.pix_diff(img)
-                    w = torch.nn.functional.normalize(di * F, dim=1).float()
-                    #w = torch.tensor(normalize(di * F, norm='l1', axis=1)).float()
+                    w = torch.tensor(normalize(di * F, norm='l1', axis=1)).float()
                     res = torch.matmul(prior, w)
                     
                 else:
                     di = self.pix_diff(res)
-                    w = torch.nn.functional.normalize(di * F, dim=1).float()
-                    #torch.tensor(normalize(di * F, norm='l1', axis=1)).float()
+                    w = torch.tensor(normalize(di * F, norm='l1', axis=1)).float()
                     res = torch.matmul(res, w)
             return res
 
