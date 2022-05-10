@@ -48,8 +48,8 @@ class ROI(object):
 
 
         # Create roi from square length and starting points.
-        #roi = torch.zeros_like(slice_imgs)
-        #roi[:, start_x:start_x + square_len, start_y:start_y + square_len, :] = 1
+        roi = torch.zeros_like(slice_imgs)
+        roi[:, start_x:start_x + square_len, start_y:start_y + square_len, :] = 1
 
         # Crop images and labels according the roi_dim.
         slice_imgs = slice_imgs[:, :, start_x: start_x + square_len, start_y: start_y + square_len]
