@@ -22,7 +22,7 @@ class ROI(object):
 
         slice_imgs_small = torch.zeros([n_frames, 1, *original_dim_downsampled])
         slice_marks_small = torch.zeros([n_frames, 1, *original_dim_downsampled])
-
+        
         for t in range(n_frames):
             slice_imgs_small[t] = torchvision.transforms.functional.resize(slice_imgs[t], original_dim_downsampled)
 
@@ -67,7 +67,7 @@ class ROI(object):
     def pre_processing(self, input):
         m, _ = input.shape[2:]
         cum_diff = torch.var(input, dim=0)
-        cum_diff = torch.div(cum_diff, torch.max(cum_diff), rounding_mode = 'floor')
+        cum_diff = torch.divide(cum_diff, torch.max(cum_diff))
         mask = torch.greater(cum_diff, 0.05)
         mask_f = mask.float()
         cum_diff_padded = cum_diff * mask_f + (torch.tensor(1)-mask_f) * np.percentile(torch.masked_select(cum_diff, mask), 50)
@@ -86,6 +86,7 @@ class ROI(object):
                 'filtered_image': filtered_image}
 
         return out
+ 
 
     def exp_factor(self, n, sigma):
             y2, x2 = torch.meshgrid(torch.tensor(range(n)), torch.tensor(range(n)))
@@ -94,6 +95,7 @@ class ROI(object):
             dx = torch.sub(torch.t(x2v), x2v)
             dy = torch.sub(torch.t(y2v), y2v)
             return torch.exp(-torch.div((torch.pow(dx, 2) + torch.pow(dy, 2)), (2 * (torch.pow(torch.tensor(sigma), 2)))))
+
 
     def get_prior(self, size, prior_name, sigma=5):
 
@@ -139,7 +141,7 @@ class ROI(object):
     def get_bb(self, proc_img, img_shape):
 
             normalized = torch.reshape(proc_img, img_shape) - torch.min(proc_img)
-            normalized = torch.div(normalized, (torch.max(normalized) - torch.min(normalized)), rounding_mode = 'floor')
+            normalized = torch.divide(normalized, (torch.max(normalized) - torch.min(normalized)))
             mask = normalized > 0.5
 
             mask = torch.tensor(bd(mask, iterations=5))
@@ -158,6 +160,7 @@ class ROI(object):
             slice_x, slice_y = ndimage.find_objects(label_im == 1)[0]
             roi = torch.reshape(proc_img, (img_shape))[slice_x, slice_y]
             return [slice_x, slice_y], roi, mask
+
 
     def rectangle_to_square(self, slices, img_size=None):
             img_size = img_size[0]

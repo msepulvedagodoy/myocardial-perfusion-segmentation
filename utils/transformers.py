@@ -36,6 +36,7 @@ class ClipNorm(object):
 
       return tensor
 
+
 class ZeroPad(object):
 
     def __init__(self, size=256):
