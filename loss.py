@@ -1,41 +1,29 @@
-from turtle import forward
+
 import torch
 
 class DiceLoss(torch.nn.Module):
+  def __init__(self, smooth=1., n_classes=3) -> None:
+    super(DiceLoss, self).__init__()
+    self.smooth = smooth
+    self.n_classes = n_classes
 
-  def __init__(self, n_classes) -> None:
-      super(DiceLoss, self).__init__()
-      self.n_classes = n_classes
+  def compute_dice(self, output, target):
+    output_flat = output.contiguous().view(-1)
+    target_flat = target.contiguous().view(-1)
+    intersection = (output_flat*target_flat).sum()
 
-  def _dice_loss(self, score, target):
-    target = target.float()
-    smooth = 1e-5
-    intersect = torch.sum(torch.mul(score, target))
-    
-    y_sum = torch.sum(torch.mul(target, target))
-    z_sum = torch.sum(torch.mul(score, score))
-
-    loss = (2. * intersect + smooth) / (z_sum + y_sum + smooth)
-    loss = 1. - loss
+    loss = 1. - ((2. * intersection + self.smooth) /(output_flat.sum() + target_flat.sum() + self.smooth))
     return loss
 
-  def forward(self, inputs, target, weight=None):
-    #if weight is None:
-    #  weight = [1] * self.n_classes
-
-    assert inputs.size() == target.size(), 'predict {} & target {} shape do not match'.format(inputs.size(), target.size())
-
-    class_wise_dice = []
-
-    dice_loss = 0.
+  def forward(self, output, target):
+    
+    dice_per_class = []
+    dice_sum = 0.
     for i in range(0, self.n_classes):
-      dice = self._dice_loss(inputs[:, i, :, :], target[:, i, :, :])
-      class_wise_dice.append(1.0 - dice.detach())
-      dice_loss += dice 
+      dice = self.compute_dice(output[:, i, :, :], target[:, i, :, :])
+      dice_per_class.append(dice)
+      dice_sum += dice
 
-    losses = {'avg_loss': dice_loss/3., 'background_loss': class_wise_dice[0], 
-              "epicardium_loss": class_wise_dice[1], "endocardium_loss": class_wise_dice[2]}
-
+    losses = {'avg_loss': dice_sum/self.n_classes, 'background_loss': dice_per_class[0], 
+              "epicardium_loss": dice_per_class[1], "endocardium_loss": dice_per_class[2]}
     return losses
-
-
