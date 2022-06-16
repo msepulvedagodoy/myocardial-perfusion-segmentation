@@ -30,9 +30,9 @@ class DiceLoss(torch.nn.Module):
     for i in range(0, self.n_classes):
       dice = self._dice_loss(inputs[:, i, :, :], target[:, i, :, :])
       class_wise_dice.append(1.0 - dice.item())
-      
 
-    losses = {'avg_loss': torch.mean(torch.tensor(class_wise_dice).float()), 'background_loss': class_wise_dice[0], 
+
+    losses = {'avg_loss': 1. - torch.mean(torch.tensor(class_wise_dice).float()), 'background_loss': class_wise_dice[0], 
               "epicardium_loss": class_wise_dice[1], "endocardium_loss": class_wise_dice[2]}
 
     return losses
