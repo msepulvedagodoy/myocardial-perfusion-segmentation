@@ -10,12 +10,11 @@ class DiceLoss(torch.nn.Module):
 
    def compute_dice(self, outputs, targets):
      targets = targets.float()
-     smooth = 1e-5
      intersect = torch.sum(torch.mul(outputs, targets))
      y_sum = torch.sum(torch.mul(targets, targets))
      z_sum = torch.sum(torch.mul(outputs, outputs))
 
-     loss = (2. * intersect + smooth) / (z_sum + y_sum + smooth)
+     loss = (2. * intersect + self.smooth) / (z_sum + y_sum + self.smooth)
      loss = 1. - loss
      return loss
 
