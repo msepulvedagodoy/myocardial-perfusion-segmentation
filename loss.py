@@ -15,8 +15,8 @@ class DiceLoss(torch.nn.Module):
     y_sum = torch.sum(torch.mul(target, target))
     z_sum = torch.sum(torch.mul(score, score))
 
-    loss = (2 * intersect + smooth) / (z_sum + y_sum + smooth)
-    loss = 1 - loss
+    loss = (2. * intersect + smooth) / (z_sum + y_sum + smooth)
+    loss = 1. - loss
     return loss
 
   def forward(self, inputs, target, weight=None):
@@ -27,12 +27,13 @@ class DiceLoss(torch.nn.Module):
 
     class_wise_dice = []
 
+    dice_loss = 0.
     for i in range(0, self.n_classes):
       dice = self._dice_loss(inputs[:, i, :, :], target[:, i, :, :])
-      class_wise_dice.append(1.0 - dice.item())
+      class_wise_dice.append(1.0 - dice.detach())
+      dice_loss += dice 
 
-
-    losses = {'avg_loss': 1. - torch.mean(torch.tensor(class_wise_dice).float()), 'background_loss': class_wise_dice[0], 
+    losses = {'avg_loss': dice_loss/3., 'background_loss': class_wise_dice[0], 
               "epicardium_loss": class_wise_dice[1], "endocardium_loss": class_wise_dice[2]}
 
     return losses
