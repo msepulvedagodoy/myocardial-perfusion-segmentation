@@ -4,7 +4,7 @@
 pydicom
 nibabel
 
-# roi
+# roi and model
 torch
 torchvision
 sklearn
@@ -13,3 +13,4 @@ numpy
 
 # model training
 wandb
+einops
