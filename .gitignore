@@ -9,3 +9,5 @@ help.py
 train.py
 basura
 transunet.py
+transunet2.py
+resnetv2.py

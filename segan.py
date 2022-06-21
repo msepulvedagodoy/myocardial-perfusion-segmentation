@@ -67,6 +67,7 @@ class NetDis(torch.nn.Module):
         self.encoder2 = NetDis.block(in_channels=64, features=128)
         self.encoder3 = NetDis.block(in_channels=128, features=256)
         self.encoder4 = NetDis.block(in_channels=256, features=512)
+        self.encoder5 = NetDis.block(in_channels=512, features=1024)
 
 
     def forward(self, sample):
@@ -74,8 +75,9 @@ class NetDis(torch.nn.Module):
         encoder2 = self.encoder2(encoder1)
         encoder3 = self.encoder3(encoder2)
         encoder4 = self.encoder4(encoder3)
+        encoder5 = self.encoder5(encoder4)
 
-        return torch.cat((sample.flatten(start_dim=1), encoder1.flatten(start_dim=1), encoder2.flatten(start_dim=1), encoder3.flatten(start_dim=1), encoder4.flatten(start_dim=1)), dim=1)
+        return torch.cat((sample.flatten(start_dim=1), encoder1.flatten(start_dim=1), encoder2.flatten(start_dim=1), encoder3.flatten(start_dim=1), encoder4.flatten(start_dim=1), encoder5.flatten(start_dim=1)), dim=1)
 
     @staticmethod
     def block(in_channels, features):
