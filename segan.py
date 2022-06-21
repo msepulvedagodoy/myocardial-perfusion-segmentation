@@ -73,8 +73,9 @@ class NetDis(torch.nn.Module):
         encoder1 = self.encoder1(sample)
         encoder2 = self.encoder2(encoder1)
         encoder3 = self.encoder3(encoder2)
+        encoder4 = self.encoder4(encoder3)
 
-        return torch.cat((sample.flatten(start_dim=1), encoder1.flatten(start_dim=1), encoder2.flatten(start_dim=1), encoder3.flatten(start_dim=1)), dim=1)
+        return torch.cat((sample.flatten(start_dim=1), encoder1.flatten(start_dim=1), encoder2.flatten(start_dim=1), encoder3.flatten(start_dim=1), encoder4.flatten(start_dim=1)), dim=1)
 
     @staticmethod
     def block(in_channels, features):
