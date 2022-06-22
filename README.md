@@ -10,6 +10,8 @@ Automatic segmentation of myocardial perfusion in cardiac magnetic resonance ima
   
 </div>
 
+<br/>
+<br/>
 
  We implement the following dashboard in Weight and Biases for show our results in this task: 
   
