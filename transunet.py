@@ -154,7 +154,7 @@ class TransUnetEncoder(torch.nn.Module):
         self.layer2 = BottleNeckUnit(self.features, self.features*2)
         self.layer3 = BottleNeckUnit(self.features*2, self.features*4)
         self.layer4 = BottleNeckUnit(self.features*4, self.features*8)
-        self.layer5 = ViT(img_dim=self.img_dim // self.patch_dim, in_channels=self.features*8, patch_dim=self.patch_dim, classes=classes, embedding_dim=embedding_dim, num_blocks=num_blocks, num_heads=num_heads, linear_dim=linear_dim, dropout=dropout)
+        self.layer5 = ViT(img_dim=self.img_dim // self.patch_dim, in_channels=self.features*8, patch_dim=1, classes=classes, embedding_dim=embedding_dim, num_blocks=num_blocks, num_heads=num_heads, linear_dim=linear_dim, dropout=dropout)
         self.layer6 = torch.nn.Conv2d(self.features*8, out_channels=self.features*4, kernel_size=3, stride=1, padding=1)
         self.batchnorm = torch.nn.BatchNorm2d(num_features=self.features*8)
         self.out = torch.nn.ReLU()
