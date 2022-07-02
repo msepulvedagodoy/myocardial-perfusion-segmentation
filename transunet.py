@@ -77,7 +77,7 @@ class TransformerEncoder(torch.nn.Module):
         return x
 
 class ViT(torch.nn.Module):
-    def __init__(self, img_dim, in_channels, patch_dim, classes, embedding_dim, num_blocks, num_heads, linear_dim, dropout) -> None:
+    def __init__(self, img_dim, in_channels, patch_dim, embedding_dim, num_blocks, num_heads, linear_dim, dropout) -> None:
         super(ViT, self).__init__()
         
         self.num_tokens = (img_dim//patch_dim)**2
@@ -92,7 +92,7 @@ class ViT(torch.nn.Module):
         
         self.transformer = TransformerEncoder(embedding_dim=embedding_dim, linear_dim=linear_dim, num_blocks=num_blocks, num_heads=num_heads, dropout=dropout)
 
-        self.final = torch.nn.Linear(embedding_dim, classes)
+        self.final = torch.nn.Linear(embedding_dim, embedding_dim)
 
     def forward(self, x):
         patches = rearrange(
@@ -143,7 +143,7 @@ class BottleNeckUnit(torch.nn.Module):
 
 class TransUnetEncoder(torch.nn.Module):
 
-    def __init__(self, img_dim, init_features, patch_dim, in_channels, classes, embedding_dim, num_blocks, num_heads, linear_dim, dropout) -> None:
+    def __init__(self, img_dim, init_features, patch_dim, in_channels, embedding_dim, num_blocks, num_heads, linear_dim, dropout) -> None:
         super(TransUnetEncoder, self).__init__()
 
         self.features = init_features
@@ -154,7 +154,7 @@ class TransUnetEncoder(torch.nn.Module):
         self.layer2 = BottleNeckUnit(self.features, self.features*2)
         self.layer3 = BottleNeckUnit(self.features*2, self.features*4)
         self.layer4 = BottleNeckUnit(self.features*4, self.features*8)
-        self.layer5 = ViT(img_dim=self.img_dim // self.patch_dim, in_channels=self.features*8, patch_dim=1, classes=classes, embedding_dim=embedding_dim, num_blocks=num_blocks, num_heads=num_heads, linear_dim=linear_dim, dropout=dropout)
+        self.layer5 = ViT(img_dim=self.img_dim // self.patch_dim, in_channels=self.features*8, patch_dim=1, embedding_dim=embedding_dim, num_blocks=num_blocks, num_heads=num_heads, linear_dim=linear_dim, dropout=dropout)
         self.layer6 = torch.nn.Conv2d(self.features*8, out_channels=self.features*4, kernel_size=3, stride=1, padding=1)
         self.batchnorm = torch.nn.BatchNorm2d(num_features=self.features*8)
         self.out = torch.nn.ReLU()
