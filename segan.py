@@ -1,7 +1,7 @@
 from pickle import FALSE
 from turtle import forward
 import torch
-from collections import OrderedDict
+
 
 class NetSeg(torch.nn.Module):
 
@@ -86,7 +86,3 @@ class NetDis(torch.nn.Module):
             torch.nn.BatchNorm2d(num_features=features),
             torch.nn.LeakyReLU(inplace=True)
         )
-
-
-
-    
