@@ -205,7 +205,7 @@ class TransUnet(torch.nn.Module):
     def __init__(self, img_dim=128, patch_dim=16, embedding_dim=512, init_features=64, in_channels=1, classes=3, num_blocks=6, num_heads=8, linear_dim=1024, dropout=0.1) -> None:
         super(TransUnet, self).__init__()
 
-        self.encoder = TransUnetEncoder(img_dim=img_dim, init_features=init_features, patch_dim=patch_dim, in_channels=in_channels, classes=classes, embedding_dim=embedding_dim,num_blocks=num_blocks, num_heads=num_heads, linear_dim=linear_dim, dropout=dropout)
+        self.encoder = TransUnetEncoder(img_dim=img_dim, init_features=init_features, patch_dim=patch_dim, in_channels=in_channels, embedding_dim=embedding_dim,num_blocks=num_blocks, num_heads=num_heads, linear_dim=linear_dim, dropout=dropout)
 
         self.decoder1 = TransUnetDecoderUnit(in_channels=init_features*8, out_channels=init_features*2)
         self.decoder2 = TransUnetDecoderUnit(in_channels=init_features*4, out_channels=init_features)
