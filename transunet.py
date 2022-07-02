@@ -191,7 +191,7 @@ class TransUnetDecoderUnit(torch.nn.Module):
                     torch.nn.ReLU(inplace=True)
         )
 
-    def forward(self, x, x_skip):
+    def forward(self, x, x_skip=None):
 
         x = self.upsample(x)
         if x_skip is not None:
