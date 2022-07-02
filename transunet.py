@@ -134,10 +134,9 @@ class BottleNeckUnit(torch.nn.Module):
         self.out = torch.nn.ReLU()
     
     def forward(self, x):
+        x_down = self.downsample(x)
         x = self.layer(x)
-        identity = self.downsample(x)
-
-        x += identity
+        x = x + x_down
         x = self.out(x)
         return x
 
