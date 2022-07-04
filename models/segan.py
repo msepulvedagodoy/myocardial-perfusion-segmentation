@@ -61,14 +61,6 @@ class NetDis(torch.nn.Module):
     def __init__(self, input_channels=1) -> None:
         super(NetDis, self).__init__()
 
-        #self.encoder1 = torch.nn.Sequential(torch.nn.Conv2d(in_channels=input_channels, out_channels=64, kernel_size=4, stride=2, padding=1, bias=False),
-        #                torch.nn.LeakyReLU(inplace=True)
-        #                )
-        #self.encoder2 = NetDis.block(in_channels=64, features=128)
-        #self.encoder3 = NetDis.block(in_channels=128, features=256)
-        #self.encoder4 = NetDis.block(in_channels=256, features=512)
-        #self.encoder5 = NetDis.block(in_channels=512, features=1024)
-
         self.encoder1 = NetSeg.block(in_channels=input_channels, features=32)
         self.pooling1 = torch.nn.MaxPool2d(kernel_size=2, stride=2)
         self.encoder2 = NetSeg.block(in_channels=32, features=64)
@@ -78,13 +70,7 @@ class NetDis(torch.nn.Module):
         self.encoder4 = NetSeg.block(in_channels=128, features=256)
         self.pooling4 = torch.nn.MaxPool2d(kernel_size=2, stride=2)
 
-
     def forward(self, sample):
-        #encoder1 = self.encoder1(sample)
-        #encoder2 = self.encoder2(encoder1)
-        #encoder3 = self.encoder3(encoder2)
-        #encoder4 = self.encoder4(encoder3)
-        #encoder5 = self.encoder5(encoder4)
         
         encoder1 = self.encoder1(sample)
         encoder2 = self.encoder2(self.pooling1(encoder1))
@@ -103,11 +89,3 @@ class NetDis(torch.nn.Module):
             torch.nn.BatchNorm2d(num_features=features),
             torch.nn.ReLU(inplace=True),  
         )
-
-    #@staticmethod
-    #def block(in_channels, features):
-    #    return torch.nn.Sequential(
-    #        torch.nn.Conv2d(in_channels=in_channels, out_channels=features, kernel_size=4, stride=2, padding=1, bias=False),
-    #        torch.nn.BatchNorm2d(num_features=features),
-    #        torch.nn.LeakyReLU(inplace=True)
-    #    )
