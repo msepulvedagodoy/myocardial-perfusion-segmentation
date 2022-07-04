@@ -10,6 +10,7 @@ Automatic segmentation of myocardial perfusion in cardiac magnetic resonance ima
   
 </div>
 
+<br>
 <details open>
 <summary>Experiments</summary>
 
