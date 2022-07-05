@@ -10,7 +10,7 @@ Automatic segmentation of myocardial perfusion in cardiac magnetic resonance ima
 <details open>
 <summary>Experiments</summary>
 
-- [Training and inference with UNet](https://github.com/msepulvedagodoy/myocardial-perfusion-segmentation.wiki.git) 🌟
+- [Training and inference with UNet](https://github.com/msepulvedagodoy/myocardial-perfusion-segmentation/wiki/Training-and-inference-with-UNet) 🌟
 - [Training and inference with SegAN]() 🌟
 - [Training and inference with TransUNet]() 🚀
 
