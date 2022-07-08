@@ -26,9 +26,10 @@ class DiceLoss(torch.nn.Module):
      for i in range(0, self.n_classes):
        dice = self.compute_dice(outputs[:, i, :, :], targets[:, i, :, :])
        class_wise_dice.append(dice.detach())
-       dice_loss += dice 
+       if i > 0:
+        dice_loss += dice 
 
-     losses = {'avg_loss': dice_loss/self.n_classes, 'background_loss': class_wise_dice[0], 
+     losses = {'avg_loss': dice_loss/(self.n_classes-1), 'background_loss': class_wise_dice[0], 
                "epicardium_loss": class_wise_dice[1], "endocardium_loss": class_wise_dice[2]}
 
      return losses
