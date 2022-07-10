@@ -10,6 +10,8 @@ torchvision
 sklearn
 scipy
 numpy
+torchmetrics
+medpy
 
 # model training
 wandb
