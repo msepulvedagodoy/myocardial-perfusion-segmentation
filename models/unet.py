@@ -3,7 +3,7 @@ from collections import OrderedDict
 
 class UNet(torch.nn.Module):
 
-    def __init__(self, input_channels=1, output_channels=3, init_features=32) -> None:
+    def __init__(self, input_channels=1, output_channels=3, init_features=64) -> None:
         super(UNet, self).__init__()
 
         features = init_features
