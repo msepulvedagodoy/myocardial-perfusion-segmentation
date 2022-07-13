@@ -5,29 +5,31 @@ import torch
 
 class NetSeg(torch.nn.Module):
 
-    def __init__(self, input_channels=1, output_channels=3) -> None:
+    def __init__(self, input_channels=1, output_channels=3, init_features=32) -> None:
         super(NetSeg, self).__init__()
 
-        self.encoder1 = NetSeg.block(in_channels=input_channels, features=64)
+        features = init_features
+
+        self.encoder1 = NetSeg.block(in_channels=input_channels, features=features)
         self.pooling1 = torch.nn.MaxPool2d(kernel_size=2, stride=2)
-        self.encoder2 = NetSeg.block(in_channels=64, features=128)
+        self.encoder2 = NetSeg.block(in_channels=features, features=features*2)
         self.pooling2 = torch.nn.MaxPool2d(kernel_size=2, stride=2)
-        self.encoder3 = NetSeg.block(in_channels=128, features=256)
+        self.encoder3 = NetSeg.block(in_channels=features*2, features=features*4)
         self.pooling3 = torch.nn.MaxPool2d(kernel_size=2, stride=2)
-        self.encoder4 = NetSeg.block(in_channels=256, features=512)
+        self.encoder4 = NetSeg.block(in_channels=features*4, features=features*8)
         self.pooling4 = torch.nn.MaxPool2d(kernel_size=2, stride=2)
 
-        self.bottleneck = NetSeg.block(in_channels=512, features=1024)
+        self.bottleneck = NetSeg.block(in_channels=features*8, features=features*16)
 
-        self.upconv1 = torch.nn.ConvTranspose2d(in_channels=1024, out_channels=512, kernel_size=2, stride=2)
-        self.decoder1 = NetSeg.block(in_channels=1024, features=512)
-        self.upconv2 = torch.nn.ConvTranspose2d(in_channels=512, out_channels=256, kernel_size=2, stride=2)
-        self.decoder2 = NetSeg.block(in_channels=512, features=256)
-        self.upconv3 = torch.nn.ConvTranspose2d(in_channels=256, out_channels=128, kernel_size=2, stride=2)
-        self.decoder3 = NetSeg.block(in_channels=256, features=128)
-        self.upconv4 = torch.nn.ConvTranspose2d(in_channels=128, out_channels=64, kernel_size=2, stride=2)
-        self.decoder4 = NetSeg.block(in_channels=128, features=64)
-        self.output = torch.nn.Conv2d(in_channels=64, out_channels=output_channels, kernel_size=1, padding=0, stride=1)
+        self.upconv1 = torch.nn.ConvTranspose2d(in_channels=features*16, out_channels=features*8, kernel_size=2, stride=2)
+        self.decoder1 = NetSeg.block(in_channels=(features*8)*2, features=features*8)
+        self.upconv2 = torch.nn.ConvTranspose2d(in_channels=features*8, out_channels=features*4, kernel_size=2, stride=2)
+        self.decoder2 = NetSeg.block(in_channels=(features*4)*2, features=features*4)
+        self.upconv3 = torch.nn.ConvTranspose2d(in_channels=features*4, out_channels=features*2, kernel_size=2, stride=2)
+        self.decoder3 = NetSeg.block(in_channels=(features*2)*2, features=features*2)
+        self.upconv4 = torch.nn.ConvTranspose2d(in_channels=features*2, out_channels=features, kernel_size=2, stride=2)
+        self.decoder4 = NetSeg.block(in_channels=features*2, features=features)
+        self.output = torch.nn.Conv2d(in_channels=features, out_channels=output_channels, kernel_size=1, padding=0, stride=1)
 
     def forward(self, sample):
 
@@ -58,16 +60,17 @@ class NetSeg(torch.nn.Module):
 
 class NetDis(torch.nn.Module):
     
-    def __init__(self, input_channels=1) -> None:
+    def __init__(self, input_channels=1, init_features=32) -> None:
         super(NetDis, self).__init__()
 
-        self.encoder1 = NetSeg.block(in_channels=input_channels, features=64)
+        features=init_features
+        self.encoder1 = NetSeg.block(in_channels=input_channels, features=features)
         self.pooling1 = torch.nn.MaxPool2d(kernel_size=2, stride=2)
-        self.encoder2 = NetSeg.block(in_channels=64, features=128)
+        self.encoder2 = NetSeg.block(in_channels=features, features=features*2)
         self.pooling2 = torch.nn.MaxPool2d(kernel_size=2, stride=2)
-        self.encoder3 = NetSeg.block(in_channels=128, features=256)
+        self.encoder3 = NetSeg.block(in_channels=features*2, features=features*4)
         self.pooling3 = torch.nn.MaxPool2d(kernel_size=2, stride=2)
-        self.encoder4 = NetSeg.block(in_channels=256, features=512)
+        self.encoder4 = NetSeg.block(in_channels=features*4, features=features*8)
         self.pooling4 = torch.nn.MaxPool2d(kernel_size=2, stride=2)
 
     def forward(self, sample):
