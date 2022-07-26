@@ -202,7 +202,7 @@ class TransUnetDecoderUnit(torch.nn.Module):
         return out
 
 class TransUnet(torch.nn.Module):
-    def __init__(self, img_dim=128, patch_dim=16, embedding_dim=512, init_features=64, in_channels=1, classes=3, num_blocks=12, num_heads=12, linear_dim=1024, dropout=0.1) -> None:
+    def __init__(self, img_dim=128, patch_dim=8, embedding_dim=256, init_features=64, in_channels=1, classes=3, num_blocks=12, num_heads=12, linear_dim=512, dropout=0.1) -> None:
         super(TransUnet, self).__init__()
 
         self.encoder = TransUnetEncoder(img_dim=img_dim, init_features=init_features, patch_dim=patch_dim, in_channels=in_channels, embedding_dim=embedding_dim,num_blocks=num_blocks, num_heads=num_heads, linear_dim=linear_dim, dropout=dropout)
