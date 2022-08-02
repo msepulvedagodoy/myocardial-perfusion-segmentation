@@ -6,6 +6,14 @@ import torch
 
 class MultiHeadAttention(torch.nn.Module):
     def __init__(self, embedding_dim, num_heads) -> None:
+        
+        """_summary_
+
+        Args:
+            embedding_dim (_type_): _description_
+
+            num_heads (_type_): _description_
+        """
         super(MultiHeadAttention, self).__init__()
 
         self.num_heads = num_heads
@@ -34,6 +42,17 @@ class MultiHeadAttention(torch.nn.Module):
 class TransformerBlock(torch.nn.Module):
 
     def __init__(self, embedding_dim, num_heads, dropout, linear_dim) -> None:
+        """_summary_
+
+        Args:
+            embedding_dim (_type_): _description_
+
+            num_heads (_type_): _description_
+
+            dropout (_type_): _description_
+
+            linear_dim (_type_): _description_
+        """
         super().__init__()
 
         self.mhsa = MultiHeadAttention(embedding_dim=embedding_dim, num_heads=num_heads)
@@ -66,6 +85,19 @@ class TransformerBlock(torch.nn.Module):
 
 class TransformerEncoder(torch.nn.Module):
     def __init__(self, embedding_dim, linear_dim, num_blocks, num_heads, dropout) -> None:
+        """_summary_
+
+        Args:
+            embedding_dim (_type_): _description_
+
+            linear_dim (_type_): _description_
+
+            num_blocks (_type_): _description_
+
+            num_heads (_type_): _description_
+
+            dropout (_type_): _description_
+        """
         super(TransformerEncoder, self).__init__()
 
         self.blocks = torch.nn.ModuleList(
@@ -78,6 +110,25 @@ class TransformerEncoder(torch.nn.Module):
 
 class ViT(torch.nn.Module):
     def __init__(self, img_dim, in_channels, patch_dim, embedding_dim, num_blocks, num_heads, linear_dim, dropout) -> None:
+        """_summary_
+
+        Args:
+            img_dim (_type_): _description_
+
+            in_channels (_type_): _description_
+
+            patch_dim (_type_): _description_
+
+            embedding_dim (_type_): _description_
+
+            num_blocks (_type_): _description_
+
+            num_heads (_type_): _description_
+
+            linear_dim (_type_): _description_
+
+            dropout (_type_): _description_
+        """
         super(ViT, self).__init__()
         
         self.num_tokens = (img_dim//patch_dim)**2
@@ -116,6 +167,13 @@ class ViT(torch.nn.Module):
 
 class BottleNeckUnit(torch.nn.Module):
     def __init__(self, in_channels, out_channels) -> None:
+        """_summary_
+
+        Args:
+            in_channels (_type_): _description_
+
+            out_channels (_type_): _description_
+        """
         super(BottleNeckUnit, self).__init__()
 
         self.downsample = torch.nn.Sequential(
@@ -144,6 +202,27 @@ class BottleNeckUnit(torch.nn.Module):
 class TransUnetEncoder(torch.nn.Module):
 
     def __init__(self, img_dim, init_features, patch_dim, in_channels, embedding_dim, num_blocks, num_heads, linear_dim, dropout) -> None:
+        """_summary_
+
+        Args:
+            img_dim (_type_): _description_
+
+            init_features (_type_): _description_
+
+            patch_dim (_type_): _description_
+
+            in_channels (_type_): _description_
+
+            embedding_dim (_type_): _description_
+
+            num_blocks (_type_): _description_
+
+            num_heads (_type_): _description_
+
+            linear_dim (_type_): _description_
+
+            dropout (_type_): _description_
+        """
         super(TransUnetEncoder, self).__init__()
 
         self.features = init_features
@@ -179,6 +258,15 @@ class TransUnetEncoder(torch.nn.Module):
 
 class TransUnetDecoderUnit(torch.nn.Module):
     def __init__(self, in_channels, out_channels) -> None:
+
+        """_summary_
+
+        Args:
+            in_channels (_type_): _description_
+            
+            out_channels (_type_): _description_
+
+        """
         super(TransUnetDecoderUnit, self).__init__()
 
         self.upsample = torch.nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True)
@@ -202,7 +290,32 @@ class TransUnetDecoderUnit(torch.nn.Module):
         return out
 
 class TransUnet(torch.nn.Module):
-    def __init__(self, img_dim=128, patch_dim=8, embedding_dim=256, init_features=64, in_channels=1, classes=3, num_blocks=12, num_heads=12, linear_dim=512, dropout=0.1) -> None:
+    def __init__(self, img_dim=128, patch_dim=8, embedding_dim=512, init_features=64, in_channels=1, classes=3, num_blocks=12, num_heads=12, linear_dim=512, dropout=0.1) -> None:
+        
+        """_summary_
+        
+        Args:
+            img_dim (int, optional): size of the input dimension for the model. Defaults to 128.
+
+            patch_dim (int, optional): size of the patches. Defaults to 8.
+
+            embedding_dim (int, optional): _description_. Defaults to 256.
+
+            init_features (int, optional): number of initial features for the encoder. Defaults to 64.
+
+            in_channels (int, optional): number of channels in the input image. Defaults to 1.
+
+            classes (int, optional): number of classes to segment. Defaults to 3.
+
+            num_blocks (int, optional): number of attention blocks in the transformer module. Defaults to 12.
+
+            num_heads (int, optional): number of heads in the attention module. Defaults to 12.
+
+            linear_dim (int, optional): _description_. Defaults to 512.
+
+            dropout (float, optional): percentage of neurons to deactivate during training. Defaults to 0.1.
+
+        """
         super(TransUnet, self).__init__()
 
         self.encoder = TransUnetEncoder(img_dim=img_dim, init_features=init_features, patch_dim=patch_dim, in_channels=in_channels, embedding_dim=embedding_dim,num_blocks=num_blocks, num_heads=num_heads, linear_dim=linear_dim, dropout=dropout)
