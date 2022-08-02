@@ -290,16 +290,16 @@ class TransUnetDecoderUnit(torch.nn.Module):
         return out
 
 class TransUnet(torch.nn.Module):
-    def __init__(self, img_dim=128, patch_dim=8, embedding_dim=512, init_features=64, in_channels=1, classes=3, num_blocks=12, num_heads=12, linear_dim=512, dropout=0.1) -> None:
+    def __init__(self, img_dim=128, patch_dim=16, embedding_dim=512, init_features=64, in_channels=1, classes=3, num_blocks=12, num_heads=12, linear_dim=512, dropout=0.1) -> None:
         
         """_summary_
         
         Args:
             img_dim (int, optional): size of the input dimension for the model. Defaults to 128.
 
-            patch_dim (int, optional): size of the patches. Defaults to 8.
+            patch_dim (int, optional): size of the patches. Defaults to 16.
 
-            embedding_dim (int, optional): _description_. Defaults to 256.
+            embedding_dim (int, optional): _description_. Defaults to 512.
 
             init_features (int, optional): number of initial features for the encoder. Defaults to 64.
 
