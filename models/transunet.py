@@ -234,7 +234,7 @@ class TransUnetEncoder(torch.nn.Module):
         self.layer3 = BottleNeckUnit(self.features*2, self.features*4)
         self.layer4 = BottleNeckUnit(self.features*4, self.features*8)
         self.layer5 = ViT(img_dim = self.img_dim // self.patch_dim, in_channels=self.features*8, patch_dim=1, embedding_dim=embedding_dim, num_blocks=num_blocks, num_heads=num_heads, linear_dim=linear_dim, dropout=dropout)
-        self.layer6 = torch.nn.Conv2d(self.features*12, out_channels=self.features*4, kernel_size=3, stride=1, padding=1)
+        self.layer6 = torch.nn.Conv2d(self.features*8, out_channels=self.features*4, kernel_size=3, stride=1, padding=1)
         self.batchnorm = torch.nn.BatchNorm2d(num_features=self.features*4)
         self.out = torch.nn.ReLU()
 
@@ -290,7 +290,7 @@ class TransUnetDecoderUnit(torch.nn.Module):
         return out
 
 class TransUnet(torch.nn.Module):
-    def __init__(self, img_dim=128, patch_dim=16, embedding_dim=768, init_features=64, in_channels=1, classes=3, num_blocks=12, num_heads=12, linear_dim=3072, dropout=0.1) -> None:
+    def __init__(self, img_dim=128, patch_dim=16, embedding_dim=512, init_features=64, in_channels=1, classes=3, num_blocks=12, num_heads=12, linear_dim=3072, dropout=0.1) -> None:
         
         """_summary_
         
@@ -299,7 +299,7 @@ class TransUnet(torch.nn.Module):
 
             patch_dim (int, optional): size of the patches. Defaults to 16.
 
-            embedding_dim (int, optional): _description_. Defaults to 768.
+            embedding_dim (int, optional): _description_. Defaults to 512.
 
             init_features (int, optional): number of initial features for the encoder. Defaults to 64.
 
