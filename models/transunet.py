@@ -229,7 +229,7 @@ class TransUnetEncoder(torch.nn.Module):
         self.img_dim = img_dim
         self.patch_dim = patch_dim
         
-        self.layer1 = torch.nn.Conv2d(in_channels=in_channels, out_channels=self.features, kernel_size=7, stride=2, padding=3, bias=False)
+        self.layer1 = torch.nn.Conv2d(in_channels=in_channels, out_channels=self.features, kernel_size=7, stride=1, padding=3, bias=False)
         self.layer2 = BottleNeckUnit(self.features, self.features*2)
         self.layer3 = BottleNeckUnit(self.features*2, self.features*4)
         self.layer4 = BottleNeckUnit(self.features*4, self.features*8)
@@ -290,7 +290,7 @@ class TransUnetDecoderUnit(torch.nn.Module):
         return out
 
 class TransUnet(torch.nn.Module):
-    def __init__(self, img_dim=128, patch_dim=16, embedding_dim=512, init_features=64, in_channels=1, classes=3, num_blocks=12, num_heads=12, linear_dim=3072, dropout=0.1) -> None:
+    def __init__(self, img_dim=128, patch_dim=8, embedding_dim=512, init_features=64, in_channels=1, classes=3, num_blocks=12, num_heads=12, linear_dim=3072, dropout=0.1) -> None:
         
         """_summary_
         
