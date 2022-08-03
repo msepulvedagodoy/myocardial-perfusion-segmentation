@@ -323,9 +323,9 @@ class TransUnet(torch.nn.Module):
         self.decoder1 = TransUnetDecoderUnit(in_channels=init_features*8, out_channels=init_features*2)
         self.decoder2 = TransUnetDecoderUnit(in_channels=init_features*4, out_channels=init_features)
         self.decoder3 = TransUnetDecoderUnit(in_channels=init_features*2, out_channels=int(init_features * 1/2))
-        self.decoder4 = TransUnetDecoderUnit(in_channels=int(init_features * 1/2), out_channels=int(init_features * 1/8))
+        #self.decoder4 = TransUnetDecoderUnit(in_channels=int(init_features * 1/2), out_channels=int(init_features * 1/8))
 
-        self.conv = torch.nn.Conv2d(in_channels=int(init_features * 1/8), out_channels=classes, kernel_size=1, bias=False)
+        self.conv = torch.nn.Conv2d(in_channels=int(init_features * 1/2), out_channels=classes, kernel_size=1, bias=False)
 
     def forward(self, x):
         
@@ -334,7 +334,7 @@ class TransUnet(torch.nn.Module):
         out = self.decoder1(x, x3)
         out = self.decoder2(out, x2)
         out = self.decoder3(out, x1)
-        out = self.decoder4(out)
+        #out = self.decoder4(out)
         out = self.conv(out)
 
         return torch.softmax(out, dim=1)
