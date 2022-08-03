@@ -34,7 +34,7 @@ class MultiHeadAttention(torch.nn.Module):
 
         energy = torch.einsum("... i d , ... j d -> ... i j", query, key) * self.scale
 
-        attention = torch.nn.Softmax()(energy)
+        attention = torch.nn.Softmax(dim=-1)(energy)
         out = torch.einsum("... i j , ... j d -> ... i d", attention, value)
         out = self.out(out)
         return out
