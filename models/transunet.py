@@ -297,7 +297,7 @@ class TransUnet(torch.nn.Module):
         Args:
             img_dim (int, optional): size of the input dimension for the model. Defaults to 128.
 
-            patch_dim (int, optional): size of the patches. Defaults to 16.
+            patch_dim (int, optional): size of the patches. Defaults to 8.
 
             embedding_dim (int, optional): _description_. Defaults to 512.
 
